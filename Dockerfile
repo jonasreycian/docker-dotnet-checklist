@@ -24,6 +24,21 @@ WORKDIR /source/src
 RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
     dotnet publish -a ${TARGETARCH/amd64/x64} --use-current-runtime --self-contained false -o /app
 
+RUN dotnet test /source/tests
+
+# Create a development container
+# At this point, when you run your containerized application, it's using the .NET runtime image. 
+# While this small image is good for production, it lacks the SDK tools and dependencies you may need when developing. 
+# Also, during development, you may not need to run dotnet publish. You can use multi-stage builds to build stages for 
+# both development and production in the same Dockerfile. For more details, see Multi-stage builds.
+
+# Add a new development stage to your Dockerfile and update your compose.yaml file to use this stage for local development.
+FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine AS development
+COPY . /source
+WORKDIR /source/src
+CMD dotnet run --no-launch-profile
+    
+
 # If you need to enable globalization and time zones:
 # https://github.com/dotnet/dotnet-docker/blob/main/samples/enable-globalization.md
 ################################################################################

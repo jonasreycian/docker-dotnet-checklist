@@ -18,6 +18,6 @@ public class IndexModel : PageModel
         public void OnGet()
         {
             var s =_context.Students?.Where(d=>d.ID==1).FirstOrDefault();
-            this.StudentName = $"{s?.FirstMidName} {s?.LastName}";
+            this.StudentName = $"{s?.FirstMidName} {s?.LastName} from the database.";
         }
     }
